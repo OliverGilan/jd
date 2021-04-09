@@ -21,25 +21,26 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var code string
+var newItemName string;
 
-// initCmd represents the init command
-var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "Initializes a new Johnny Decimal system in the current directory.",
-	Long: `Init creates the metadata for a new Johnny Decimal system and either assigns 
-	a project code automatically or uses the given code.`,
+// itemCmd represents the item command
+var itemCmd = &cobra.Command{
+	Use:   "item",
+	Short: "Crate new item directory",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
+		fmt.Println("item called")
 	},
-	Args: cobra.MaximumNArgs(1), //The only arg should be one positional arg for the name of the new system
 }
 
 func init() {
-	rootCmd.AddCommand(initCmd)
+	rootCmd.AddCommand(itemCmd)
 
-	// initCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	initCmd.Flags().StringVarP(&code, "code", "c", "", "project code to use")
+	categoryCmd.Flags().StringVarP(&newItemName ,"rename", "r", "", "Rename category")
+	categoryCmd.Flags().BoolP("remove", "rm", false, "Delete an area category and all child items")
 }

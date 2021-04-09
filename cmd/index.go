@@ -21,25 +21,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var code string
-
-// initCmd represents the init command
-var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "Initializes a new Johnny Decimal system in the current directory.",
-	Long: `Init creates the metadata for a new Johnny Decimal system and either assigns 
-	a project code automatically or uses the given code.`,
+// indexCmd represents the index command
+var indexCmd = &cobra.Command{
+	Use:   "index [<PRO>]",
+	Short: "Display system index",
+	Long: `Display the system index. If no project code is provided the default system will be displayed.
+	
+	To display all system indices use the -a flag.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
+		fmt.Println("index called")
 	},
-	Args: cobra.MaximumNArgs(1), //The only arg should be one positional arg for the name of the new system
 }
 
 func init() {
-	rootCmd.AddCommand(initCmd)
+	rootCmd.AddCommand(indexCmd)
 
-	// initCmd.PersistentFlags().String("foo", "", "A help for foo")
+	indexCmd.Flags().BoolP("all", "a", false, "Display all system indices")
 
-	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	initCmd.Flags().StringVarP(&code, "code", "c", "", "project code to use")
 }
