@@ -38,8 +38,5 @@ var initCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(initCmd)
 
-	// initCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	initCmd.Flags().StringVarP(&code, "code", "c", "", "project code to use")
 }

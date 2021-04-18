@@ -21,8 +21,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var newItemName string;
-
 // itemCmd represents the item command
 var itemCmd = &cobra.Command{
 	Use:   "item",
@@ -41,6 +39,6 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(itemCmd)
 
-	categoryCmd.Flags().StringVarP(&newItemName ,"rename", "r", "", "Rename category")
-	categoryCmd.Flags().BoolP("remove", "rm", false, "Delete an area category and all child items")
+	itemCmd.Flags().StringP("rename", "r", "", "Rename category")
+	itemCmd.Flags().Bool("rm", false, "Delete an area category and all child items")
 }

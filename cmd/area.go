@@ -21,8 +21,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var newAreaName string;
-
 // areaCmd represents the area command
 var areaCmd = &cobra.Command{
 	Use:   "area [<PRO>] [<name>]",
@@ -36,7 +34,8 @@ var areaCmd = &cobra.Command{
 	
 	Delete existing area with -rm.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("area called")
+		name, _ := cmd.Flags().GetString("rename")
+		fmt.Println("area called:", name)
 	},
 	Args: cobra.MaximumNArgs(2),
 }
@@ -44,7 +43,6 @@ var areaCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(areaCmd)
 	
-	areaCmd.Flags().StringVarP(&newAreaName ,"rename", "r", "", "Rename area")
-	areaCmd.Flags().BoolP("remove", "rm", false, "Delete an area directory and all child categories and items")
-	
+	areaCmd.Flags().StringP("rename", "r", "", "Rename area")
+	areaCmd.Flags().Bool("rm", false, "Delete an area and all child categories and items")	
 }

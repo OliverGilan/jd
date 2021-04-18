@@ -21,7 +21,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var newCategoryName string;
 // categoryCmd represents the category command
 var categoryCmd = &cobra.Command{
 	Use:   "category [<code>] [<name>]",
@@ -33,13 +32,14 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("category called")
+		name, _ := cmd.Flags().GetString("rename")
+		fmt.Println("category called:", name)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(categoryCmd)
 
-	categoryCmd.Flags().StringVarP(&newCategoryName ,"rename", "r", "", "Rename category")
-	categoryCmd.Flags().BoolP("remove", "rm", false, "Delete an area category and all child items")
+	categoryCmd.Flags().StringP("rename", "r", "", "Rename category")
+	categoryCmd.Flags().Bool("rm", false, "Delete a category and all child items")
 }

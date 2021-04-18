@@ -21,8 +21,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var newProjectName string;
-
 // projectCmd represents the project command
 var projectCmd = &cobra.Command{
 	Use:   "project [<code>]",
@@ -42,17 +40,8 @@ var projectCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(projectCmd)
-
-	// projectCmd.Flags().BoolP("default", "d", false, "Use with <code> argument to change the default project")
-	projectCmd.Flags().BoolP("remove", "rm", false, "Deletes project and all corresponding areas, categories, and items")
-	projectCmd.Flags().StringVarP(&newProjectName, "rename", "r", "", "Rename default project or the project specified with <code> argument")
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// projectCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// projectCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	
+	projectCmd.Flags().BoolP("default", "d", false, "Use with <code> argument to change the default project")
+	projectCmd.Flags().Bool("rm", false, "Deletes project and all corresponding areas, categories, and items")
+	projectCmd.Flags().StringP("rename", "r", "", "Rename default project or the project specified with <code> argument")
 }
