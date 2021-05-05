@@ -39,7 +39,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -65,15 +65,25 @@ func initConfig() {
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".jdconfig" (without extension).
+		viper.SetConfigName(".jdconfig")
 		viper.SetConfigType("yaml")
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".jdconfig")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			// Config file not found; ignore error if desired
+			fmt.Println("Config file not found")
+			viper.Set("current_project", nil)
+			if error := viper.SafeWriteConfig(); error != nil {
+				fmt.Println(error)
+			}
+		} else {
+			// Config file was found but another error was produced
+			fmt.Fprintln(os.Stderr, "Error retreiving config file: ", err)
+		}
 	}
 }
