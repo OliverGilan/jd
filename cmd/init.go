@@ -16,12 +16,13 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
+	"errors"
+	"os"
+	"strconv"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
-
-var code string
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
@@ -30,13 +31,86 @@ var initCmd = &cobra.Command{
 	Long: `Init creates the metadata for a new Johnny Decimal system and either assigns 
 	a project code automatically or uses the given code.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
+		cwd, _ := os.Getwd()
+		
+		nextCode, err := getNextProjectCode(cmd.Flags().GetInt("code"))
+		if err != nil{}
+
+		setName(nextCode, args[0])
+		setPath(nextCode, cwd)
+
+		if def, _ := cmd.Flags().GetBool("default"); def {
+			viper.Set("default_project", nextCode)
+		}
+		if phys, _ := cmd.Flags().GetBool("physical"); phys {
+			err := os.Mkdir(strconv.Itoa(nextCode) + args[0], 0755)
+			if err != nil{
+				panic(err)
+			}
+		}
+
+		if error := viper.WriteConfig(); error != nil {
+			panic(error)
+		}
 	},
 	Args: cobra.MaximumNArgs(1), //The only arg should be one positional arg for the name of the new system
+}
+
+func setPath(code int, cwd string){
+	projectPaths := viper.GetStringMapString("project_paths")
+	if(projectPaths == nil){
+		projectPaths = make(map[string]string, 899)
+	}
+	projectPaths[strconv.Itoa(code)] = cwd
+	viper.Set("project_names", projectPaths)
+}
+
+func setName(code int, name string){
+	projectNames := viper.GetStringMapString("project_names")
+	if(projectNames == nil){
+		projectNames = make(map[string]string, 899)
+	}
+	projectNames[strconv.Itoa(code)] = name
+	viper.Set("project_names", projectNames)
+}
+ 
+
+func getNextProjectCode(fcode int, e error) (int, error){
+	var code int;
+	projectCodes := viper.GetIntSlice("projects")
+
+	if e == nil {
+		if fcode > 100 && fcode < 1000{
+			if(projectCodes[fcode-100] != 0){
+				return -1, errors.New("Code in use")
+			}
+			return fcode, nil
+		}else{
+			return -1, errors.New("Code must be a 3-digit integer")
+		}
+	}else{
+		if projectCodes == nil {
+			projectCodes = make([]int, 899)
+			code = 100
+			projectCodes[0] = 100
+		}
+		for i := 0; i < cap(projectCodes); i++{
+			if(projectCodes[i] == 0){
+				code = i + 100
+				projectCodes[i] = code
+				break
+			}
+		}
+	}
+
+	viper.Set("projects", projectCodes)
+	return code, nil
 }
 
 func init() {
 	rootCmd.AddCommand(initCmd)
 
-	initCmd.Flags().StringVarP(&code, "code", "c", "", "project code to use")
+	initCmd.Flags().IntP("code", "c", -1, "Set as code for new project")
+	initCmd.Flags().BoolP("default", "d", false, "Set as default project after creating")
+	initCmd.Flags().BoolP("physical", "p", false, "Create directory to hold new project")
 }
