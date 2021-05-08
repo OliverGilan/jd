@@ -34,7 +34,9 @@ var initCmd = &cobra.Command{
 		cwd, _ := os.Getwd()
 		
 		nextCode, err := getNextProjectCode(cmd.Flags().GetInt("code"))
-		if err != nil{}
+		if err != nil{
+			panic(err)
+		}
 
 		setName(nextCode, args[0])
 		setPath(nextCode, cwd)
@@ -82,11 +84,11 @@ func getNextProjectCode(fcode int, e error) (int, error){
 	if e == nil {
 		if fcode > 100 && fcode < 1000{
 			if(projectCodes[fcode-100] != 0){
-				return -1, errors.New("Code in use")
+				return -1, errors.New("code in use")
 			}
 			return fcode, nil
 		}else{
-			return -1, errors.New("Code must be a 3-digit integer")
+			return -1, errors.New("code must be a 3-digit integer")
 		}
 	}else{
 		if projectCodes == nil {
