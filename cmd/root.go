@@ -27,6 +27,32 @@ import (
 
 var cfgFile string
 
+var config Config;
+
+type Config struct {
+	DefaultProject int `mapstructure:"default_project"`
+	Projects []map[int]Project `mapstructure:"projects"`
+	Paths map[int]string
+}
+
+type Project struct {
+	Code int 
+	Name string
+	Areas []map[int]Area `mapstructure:"areas"`
+}
+
+type Area struct {
+	Code int
+	Name string
+	Categories []map[int]Category `mapstructure:"categories"`
+}
+
+type Category struct {
+	Code int
+	Name string
+	Items []map[int]string `mapstructure:"items"`
+}
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "jd",
@@ -86,4 +112,9 @@ func initConfig() {
 			fmt.Fprintln(os.Stderr, "Error retreiving config file: ", err)
 		}
 	}
+	if err := viper.Unmarshal(&config); err != nil{
+		panic(err)
+	}
+	fmt.Println(config)
+	fmt.Println(config.Projects[0][100])
 }
