@@ -6,7 +6,7 @@ type Area struct {
 	Categories map[int]Category `mapstructure:"categories"`
 }
 
-func (a *Area) getNextCategoryCode() int {
+func (a *Area) GetNextCategoryCode() int {
 	code := 1
 	for code < 10 {
 		if _, ok := a.Categories[code]; ok {
@@ -22,7 +22,7 @@ func (a *Area) getNextCategoryCode() int {
 	return code
 }
 
-func (a *Area) isCategoryCodeAvailable(code int) bool{
+func (a *Area) IsCategoryCodeAvailable(code int) bool{
 	if _, ok := a.Categories[code]; ok {
 		return false
 	}

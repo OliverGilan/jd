@@ -10,7 +10,7 @@ type Project struct {
 // 	return p.Areas
 // }
 
-func (p *Project) getNextAreaCode() int {
+func (p *Project) GetNextAreaCode() int {
 	code := 10
 	for code < 100 {
 		if _, ok := p.Areas[code]; ok {
@@ -26,7 +26,7 @@ func (p *Project) getNextAreaCode() int {
 	return code
 }
 
-func (p *Project) isAreaCodeAvailable(code int) bool{
+func (p *Project) IsAreaCodeAvailable(code int) bool{
 	if _, ok := p.Areas[code]; ok {
 		return false
 	}

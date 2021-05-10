@@ -6,7 +6,7 @@ type Category struct {
 	Items map[int]string `mapstructure:"items"`
 }
 
-func (c *Category) getNextItemCode() int {
+func (c *Category) GetNextItemCode() int {
 	code := 1
 	for code < 100 {
 		if _, ok := c.Items[code]; ok {
@@ -22,7 +22,7 @@ func (c *Category) getNextItemCode() int {
 	return code
 }
 
-func (c *Category) isItemCodeAvailable(code int) bool{
+func (c *Category) IsItemCodeAvailable(code int) bool{
 	if _, ok := c.Items[code]; ok {
 		return false
 	}

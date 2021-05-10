@@ -28,13 +28,7 @@ import (
 
 var cfgFile string
 
-var config Config;
-
-type Config struct {
-	DefaultProject int `mapstructure:"default_project"`
-	Projects []map[int]models.Project `mapstructure:"projects"`
-	Paths map[int]string
-}
+var config models.Config;
 
 
 // rootCmd represents the base command when called without any subcommands
@@ -99,6 +93,4 @@ func initConfig() {
 	if err := viper.Unmarshal(&config); err != nil{
 		panic(err)
 	}
-	fmt.Println(config)
-	fmt.Println(config.Projects[0][100])
 }
