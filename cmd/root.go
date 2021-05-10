@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"jd/models"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -31,27 +32,10 @@ var config Config;
 
 type Config struct {
 	DefaultProject int `mapstructure:"default_project"`
-	Projects []map[int]Project `mapstructure:"projects"`
+	Projects []map[int]models.Project `mapstructure:"projects"`
 	Paths map[int]string
 }
 
-type Project struct {
-	Code int 
-	Name string
-	Areas []map[int]Area `mapstructure:"areas"`
-}
-
-type Area struct {
-	Code int
-	Name string
-	Categories []map[int]Category `mapstructure:"categories"`
-}
-
-type Category struct {
-	Code int
-	Name string
-	Items []map[int]string `mapstructure:"items"`
-}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
