@@ -3,10 +3,10 @@ package models
 type Config struct {
 	DefaultProject int `mapstructure:"default_project"`
 	Projects map[int]Project `mapstructure:"projects"`
-	Paths map[int]string
+	Paths map[int]string `mapstructure:"paths"`
 }
 
-func (c *Config) GetNextAreaCode() int {
+func (c *Config) GetNextProjectCode() int {
 	code := 100
 	for code < 1000 {
 		if _, ok := c.Projects[code]; ok {
@@ -22,7 +22,7 @@ func (c *Config) GetNextAreaCode() int {
 	return code
 }
 
-func (p *Config) IsAreaCodeAvailable(code int) bool{
+func (p *Config) IsProjectCodeAvailable(code int) bool{
 	if _, ok := p.Projects[code]; ok {
 		return false
 	}

@@ -93,4 +93,10 @@ func initConfig() {
 	if err := viper.Unmarshal(&config); err != nil{
 		panic(err)
 	}
+	// fmt.Println(config.Projects[100])
+	// newProject := models.Project{Code: 200, Name: "Gabagool"}
+	// config.Projects[200] = newProject
+	// fmt.Println(config.Projects[200])
+	// viper.Set("projects", config.Projects)
+	// viper.WriteConfig()
 }
