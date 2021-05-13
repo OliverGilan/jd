@@ -1,5 +1,7 @@
 package models
 
+import "strings"
+
 type Config struct {
 	DefaultProject int `mapstructure:"default_project"`
 	Projects map[int]Project `mapstructure:"projects"`
@@ -27,4 +29,24 @@ func (p *Config) IsProjectCodeAvailable(code int) bool{
 		return false
 	}
 	return true
+}
+
+func (p *Config) GetActiveProject(cwd string) int {
+	pathParts := strings.SplitAfter(cwd, "/")
+	temp := ""
+	var lastMatching int;
+
+	for i := 0; i < len(pathParts); i++{
+		temp += pathParts[i]
+		for code, path := range p.Paths {
+			if path == temp{
+				lastMatching = code
+				break
+			}
+		}
+	}
+	if lastMatching == 0 {
+		return p.DefaultProject
+	}
+	return lastMatching
 }

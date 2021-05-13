@@ -93,6 +93,8 @@ func initConfig() {
 	if err := viper.Unmarshal(&config); err != nil{
 		panic(err)
 	}
+	// path, _ := os.Getwd()
+	// fmt.Println(strings.SplitAfter(path, "/"))
 	// fmt.Println(config.Projects[100])
 	// newProject := models.Project{Code: 200, Name: "Gabagool"}
 	// config.Projects[200] = newProject
