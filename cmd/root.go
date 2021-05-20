@@ -99,6 +99,7 @@ func initConfig() {
 	// newProject := models.Project{Code: 200, Name: "Gabagool"}
 	// config.Projects[200] = newProject
 	// fmt.Println(config.Projects[200])
+	// viper.Set("paths", config.Paths)
 	// viper.Set("projects", config.Projects)
 	// viper.WriteConfig()
 }

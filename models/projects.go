@@ -6,10 +6,6 @@ type Project struct {
 	Areas map[int]Area `mapstructure:"areas"`
 }
 
-// func (p *Project) GetAreas() []map[int]Area{
-// 	return p.Areas
-// }
-
 func (p *Project) GetNextAreaCode() int {
 	code := 10
 	for code < 100 {

@@ -1,6 +1,10 @@
 package models
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	DefaultProject int `mapstructure:"default_project"`
@@ -49,4 +53,12 @@ func (p *Config) GetActiveProject(cwd string) int {
 		return p.DefaultProject
 	}
 	return lastMatching
+}
+
+func (p *Config) SaveConfig() error{
+	viper.Set("default_project", p.DefaultProject);
+	viper.Set("projects", p.Projects);
+	viper.Set("paths", p.Paths);
+
+	return viper.WriteConfig();
 }

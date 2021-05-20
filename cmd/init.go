@@ -16,12 +16,11 @@ limitations under the License.
 package cmd
 
 import (
-	"errors"
+	"jd/models"
 	"os"
 	"strconv"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // initCmd represents the init command
@@ -31,82 +30,67 @@ var initCmd = &cobra.Command{
 	Long: `Init creates the metadata for a new Johnny Decimal system and either assigns 
 	a project code automatically or uses the given code.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cwd, _ := os.Getwd()
-		
-		nextCode, err := getNextProjectCode(cmd.Flags().GetInt("code"))
-		if err != nil{
+		cwd, err := os.Getwd()
+		if err == nil {
+			project := config.GetActiveProject(cwd)
+
+			if project != 0 {
+				panic("Can't initialize a project within an existing project")
+			}
+		} else {
 			panic(err)
+		}
+
+		var nextCode int
+		if code, err := cmd.Flags().GetInt("code"); err == nil {
+			if !config.IsProjectCodeAvailable(code) {
+				panic("Code is already in use: " + config.Projects[code].Name)
+			}
+			nextCode = code
+		} else {
+			if nc := config.GetNextProjectCode(); nc == -1 {
+				panic("All project codes taken.")
+			} else {
+				nextCode = nc
+			}
 		}
 
 		setName(nextCode, args[0])
 		setPath(nextCode, cwd)
 
 		if def, _ := cmd.Flags().GetBool("default"); def {
-			viper.Set("default_project", nextCode)
+			config.DefaultProject = nextCode;
 		}
 		if phys, _ := cmd.Flags().GetBool("physical"); phys {
-			err := os.Mkdir(strconv.Itoa(nextCode) + args[0], 0755)
+			err := os.Mkdir(strconv.Itoa(nextCode) + " " + args[0], 0755)
 			if err != nil{
 				panic(err)
 			}
 		}
 
-		if error := viper.WriteConfig(); error != nil {
-			panic(error)
+		if e := config.SaveConfig(); e != nil {
+			panic(e)
 		}
 	},
-	Args: cobra.MaximumNArgs(1), //The only arg should be one positional arg for the name of the new system
+	Args: cobra.ExactArgs(1), //The only arg should be one positional arg for the name of the new system
 }
 
-func setPath(code int, cwd string){
-	projectPaths := viper.GetStringMapString("project_paths")
-	if(projectPaths == nil){
-		projectPaths = make(map[string]string, 899)
+func setPath(code int, cwd string) {
+	if config.Paths == nil {
+		config.Paths = make(map[int]string, 899)
 	}
-	projectPaths[strconv.Itoa(code)] = cwd
-	viper.Set("project_names", projectPaths)
+	config.Paths[code] = cwd
 }
 
-func setName(code int, name string){
-	projectNames := viper.GetStringMapString("project_names")
-	if(projectNames == nil){
-		projectNames = make(map[string]string, 899)
+func setName(code int, name string) {
+	if config.Projects == nil {
+		config.Projects = make(map[int]models.Project, 899)
 	}
-	projectNames[strconv.Itoa(code)] = name
-	viper.Set("project_names", projectNames)
-}
- 
-
-func getNextProjectCode(fcode int, e error) (int, error){
-	var code int;
-	projectCodes := viper.GetIntSlice("projects")
-
-	if e == nil {
-		if fcode > 100 && fcode < 1000{
-			if(projectCodes[fcode-100] != 0){
-				return -1, errors.New("code in use")
-			}
-			return fcode, nil
-		}else{
-			return -1, errors.New("code must be a 3-digit integer")
-		}
-	}else{
-		if projectCodes == nil {
-			projectCodes = make([]int, 899)
-			code = 100
-			projectCodes[0] = 100
-		}
-		for i := 0; i < cap(projectCodes); i++{
-			if(projectCodes[i] == 0){
-				code = i + 100
-				projectCodes[i] = code
-				break
-			}
-		}
-	}
-
-	viper.Set("projects", projectCodes)
-	return code, nil
+	config.Projects[code] = models.Project{
+		Code: code,
+		Name: name,
+		Areas: nil,
+	};
 }
 
 func init() {
