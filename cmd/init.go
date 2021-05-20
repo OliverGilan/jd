@@ -58,7 +58,7 @@ var initCmd = &cobra.Command{
 		setName(nextCode, args[0])
 		setPath(nextCode, cwd)
 
-		if def, _ := cmd.Flags().GetBool("default"); def {
+		if def, _ := cmd.Flags().GetBool("default"); (def || config.DefaultProject == 0) {
 			config.DefaultProject = nextCode;
 		}
 		if phys, _ := cmd.Flags().GetBool("physical"); phys {
